@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { axiosPost } from "../../../services/axiosRequest";
+import { json } from "stream/consumers";
 export interface User {
     name:string,
     email:string,
@@ -19,7 +21,8 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleRegister = () => {
+    console.log("🚀 ~ handleRegister ~ error:", error)
+  const handleRegister = async() => {
     setError("");
     setSuccess("");
 
@@ -38,37 +41,64 @@ function Register() {
       setError("Passwords do not match");
       return;
     }
-const existingUsers = localStorage.getItem("users");
+    try {
+      const res = await axiosPost
+      ("/auth/register", {
+        name,
+        email,
+        password,
+      })
+  
+      if(!res){
+       setError("!Something wemt wrong")
+        return; 
+      }
 
-  const users = existingUsers ? JSON.parse(existingUsers) : [];
+      localStorage.setItem("token", res.token)
+      localStorage.setItem("user", JSON.stringify(res.user))
+      setSuccess("User Registered successfully")
+      router.push("/home")
+    } catch (error) {
+      setError( "Registration failed")
+      return error
+    }
+  }
+// const existingUsers = localStorage.getItem("users");
+
+//   let users = existingUsers ? JSON.parse(existingUsers) : [];
+
+//   if (!Array.isArray(users)) {
+//   users = [];
+// }
 
  
-  const userExists = users.find((u:User ) => u.email === email);
+//   const userExists = users.find((u:User ) => u.email === email);
+//   console.log("🚀 ~ handleRegister ~ userExists:", userExists)
 
-  if (userExists) {
-    setError("User already exists with this email");
-    return;
-  }
-
-  
-  const newUser = {
-    name,
-    email,
-    password,
-  };
+//   if (userExists) {
+//     setError("User already exists with this email");
+//     return;
+//   }
 
   
-  users.push(newUser);
+//   const newUser = {
+//     name,
+//     email,
+//     password,
+//   };
+
+  
+//   users.push(newUser);
 
 
-  localStorage.setItem("users", JSON.stringify(users));
+//   localStorage.setItem("users", JSON.stringify(users));
 
-  setSuccess("Registration successful! Redirecting...");
+//   setSuccess("Registration successful! Redirecting...");
 
-  setTimeout(() => {
-    router.push("/home");
-  }, 1500);
-};
+//   setTimeout(() => {
+//     router.push("/home");
+//   }, 1500);
+// };
 //     const existingUser = localStorage.getItem("user");
 
 //     if (existingUser) {

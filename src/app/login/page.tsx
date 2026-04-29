@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { User } from "../register/page";
+import axios from "axios";
+import { axiosPost } from "../../../services/axiosRequest";
 function Login() {
    const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -12,37 +13,69 @@ const [error, setError] = useState("");
 
   const router = useRouter();
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
   setError("");
   setMessage("");
 
-  const storedUser = localStorage.getItem("users");
-  console.log("🚀 ~ handleLogin ~ storedUser:", storedUser)
-
-  if (!storedUser) {
-    setError("No account found. Please register first.");
-    return;
+  if(!email || !password){
+    setError("All fields are required")
   }
 
-  const user = JSON.parse(storedUser);
-  console.log("🚀 ~ handleLogin ~ user:", user)
-
-  const foundUser = user.find(
-    (u:User) => u.email === email && u.password === password
-  );
-
-  if (foundUser) {
-    localStorage.setItem("isLoggedIn", "true");
+  try {
+    const res = await axiosPost("/auth/login",{email, password})
+   if (!res) {
+      setError("Login failed");
+      return;
+    }
+     localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
 
     setMessage("Login successful! Redirecting...");
 
+     router.push("/home");
+  } catch (error:unknown) {
+    if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Invalid email or password");
+      } else if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Invalid email or password");
+      }
+  }
+
+//   const storedUser = localStorage.getItem("users");
+//   console.log("🚀 ~ handleLogin ~ storedUser:", storedUser)
+
+//   if (!storedUser) {
+//     setError("No account found. Please register first.");
+//     return;
+//   }
+
+//   const user = JSON.parse(storedUser);
+//   console.log("🚀 ~ handleLogin ~ user:", user)
+
+//     if (!Array.isArray(user)) {
+//     setError("Corrupted user data. Please register again.");
+//     return;
+//   }
+
+ 
+//  const foundUser = user.find(
+//   (u: User) => u.email === email && u.password === password
+// );
+
+//   if (foundUser) {
+//     localStorage.setItem("isLoggedIn", "true");
+
+//     setMessage("Login successful! Redirecting...");
+
   
-      router.push("/home");
+//       router.push("/home");
   
 
-  } else {
-    setError("Invalid email or password");
-  }
+//   } else {
+//     setError("Invalid email or password");
+//   }
 };
 
   

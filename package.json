@@ -9,9 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "16.2.4",
+    "axios": "^1.15.2",
+    "next": "^16.2.4",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -23,5 +25,19 @@
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faiqalizia-bit/E-Store.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/faiqalizia-bit/E-Store/issues"
+  },
+  "homepage": "https://github.com/faiqalizia-bit/E-Store#readme"
 }

@@ -1,10 +1,9 @@
-import Login from "./login/page";
+import Login from "./login/page"
 
-export default function Home() {
-  
+export default function home() {
   return (
-  <>
- <Login/>
-  </>
-  );
+    <>
+    <Login/>
+    </>
+  )
 }
